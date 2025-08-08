@@ -17,3 +17,7 @@ pre-commit:
       run: go mod tidy
       stage_fixed: true
 
+commit-msg:
+  commands:
+    conventional-commit:
+      run: ./scripts/commit_check.sh {1}
