@@ -5,7 +5,7 @@
 set -e
 
 # Constants
-MAX_DESCRIPTION_LENGTH=50
+MAX_DESCRIPTION_LENGTH=60
 
 # Valid commit types (space-separated list)
 VALID_TYPES="feat fix docs style refactor perf test chore build ci"
