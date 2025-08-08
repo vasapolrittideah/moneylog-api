@@ -6,6 +6,7 @@ require (
 	github.com/caarlos0/env/v11 v11.3.1
 	github.com/hashicorp/consul/api v1.31.2
 	github.com/mbobakov/grpc-consul-resolver v1.5.3
+	github.com/rs/zerolog v1.34.0
 	go.mongodb.org/mongo-driver/v2 v2.2.3
 	google.golang.org/grpc v1.74.2
 )

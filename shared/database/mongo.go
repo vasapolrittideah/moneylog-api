@@ -3,10 +3,11 @@ package database
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"time"
 
 	"github.com/caarlos0/env/v11"
+	"github.com/rs/zerolog"
+	"github.com/vasapolrittideah/moneylog-api/shared/logger"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
@@ -24,13 +25,13 @@ const (
 
 // NewMongoConfig creates a new MongoDB configuration from environment variables.
 func NewMongoConfig() *MongoConfig {
-	cfg, err := env.ParseAs[MongoConfig]()
+	config, err := env.ParseAs[MongoConfig]()
 	if err != nil {
-		slog.With("error", err).Error("Failed to parse env")
+		logger.Get().Error().Err(err).Msg("Failed to parse env")
 		panic(err)
 	}
 
-	return &cfg
+	return &config
 }
 
 // Validate checks if the MongoDB configuration is valid.
@@ -49,6 +50,7 @@ type MongoDB struct {
 	config   *MongoConfig
 	client   *mongo.Client
 	database *mongo.Database
+	logger   *zerolog.Logger
 }
 
 // NewMongoDB creates a new MongoDB instance.
@@ -75,12 +77,11 @@ func (m *MongoDB) Connect(ctx context.Context) error {
 	m.client = client
 	m.database = client.Database(m.config.Database)
 
-	if pingErr := m.Ping(ctx); pingErr != nil {
-		return pingErr
+	if err := m.client.Ping(ctx, readpref.Primary()); err != nil {
+		return err
 	}
 
-	logger := slog.Default()
-	logger.InfoContext(ctx, "Connected to MongoDB", "uri", m.config.URI)
+	m.logger.Info().Str("uri", m.config.URI).Msg("Connected to MongoDB")
 	return nil
 }
 
@@ -89,13 +90,7 @@ func (m *MongoDB) Disconnect(ctx context.Context) error {
 	if m.client == nil {
 		return nil
 	}
-	return m.client.Disconnect(ctx)
-}
 
-// Ping checks if the MongoDB connection is alive.
-func (m *MongoDB) Ping(ctx context.Context) error {
-	if m.client == nil {
-		return errors.New("client is not connected")
-	}
-	return m.client.Ping(ctx, readpref.Primary())
+	m.logger.Info().Msg("Disconnected from MongoDB")
+	return m.client.Disconnect(ctx)
 }

@@ -1,13 +1,14 @@
 package discovery
 
 import (
-	"context"
 	"fmt"
-	"log/slog"
 	"strconv"
 	"strings"
 
 	consulapi "github.com/hashicorp/consul/api"
+	"github.com/rs/zerolog"
+	"github.com/vasapolrittideah/moneylog-api/shared/logger"
+
 	// Required for consul:// resolver to work with gRPC.
 	_ "github.com/mbobakov/grpc-consul-resolver"
 	"google.golang.org/grpc"
@@ -34,7 +35,7 @@ func DefaultHealthCheckConfig() *HealthCheckConfig {
 type ConsulRegistry struct {
 	client      *consulapi.Client
 	healthCheck *HealthCheckConfig
-	logger      *slog.Logger
+	logger      *zerolog.Logger
 }
 
 // NewConsulRegistry creates a new Consul registry with default health check settings.
@@ -50,14 +51,14 @@ func NewConsulRegistry(addr string) (*ConsulRegistry, error) {
 	return &ConsulRegistry{
 		client:      client,
 		healthCheck: DefaultHealthCheckConfig(),
-		logger:      slog.Default(),
+		logger:      logger.Get(),
 	}, nil
 }
 
 const expectedHostPortParts = 2
 
 // Register registers a service instance with Consul including gRPC health checks.
-func (r *ConsulRegistry) Register(ctx context.Context, instanceID string, serviceName string, hostPort string) error {
+func (r *ConsulRegistry) Register(instanceID string, serviceName string, hostPort string) error {
 	parts := strings.Split(hostPort, ":")
 	if len(parts) != expectedHostPortParts {
 		return fmt.Errorf("invalid host:port format : %s", hostPort)
@@ -83,26 +84,32 @@ func (r *ConsulRegistry) Register(ctx context.Context, instanceID string, servic
 		},
 	}
 
-	if regErr := r.client.Agent().ServiceRegister(registration); regErr != nil {
-		return regErr
+	if err := r.client.Agent().ServiceRegister(registration); err != nil {
+		return err
 	}
 
-	r.logger.InfoContext(ctx, "🎉 Registered service", "serviceName", serviceName, "instanceID", instanceID)
+	r.logger.Info().
+		Str("serviceName", serviceName).
+		Str("instanceID", instanceID).
+		Msg("Registered service")
 	return nil
 }
 
 // Deregister removes a service instance from Consul.
-func (r *ConsulRegistry) Deregister(ctx context.Context, instanceID string, serviceName string) error {
+func (r *ConsulRegistry) Deregister(instanceID string, serviceName string) error {
 	if err := r.client.Agent().ServiceDeregister(instanceID); err != nil {
 		return err
 	}
 
-	r.logger.InfoContext(ctx, "🔌 Deregistered service", "serviceName", serviceName, "instanceID", instanceID)
+	r.logger.Info().
+		Str("serviceName", serviceName).
+		Str("instanceID", instanceID).
+		Msg("Deregistered service")
 	return nil
 }
 
 // Connect establishes a gRPC connection to a service via Consul with load balancing.
-func (r *ConsulRegistry) Connect(ctx context.Context, hostPort string, serviceName string) (*grpc.ClientConn, error) {
+func (r *ConsulRegistry) Connect(hostPort string, serviceName string) (*grpc.ClientConn, error) {
 	conn, err := grpc.NewClient(
 		fmt.Sprintf("consul://%s/%s?tag=grpc&healthy=true", hostPort, serviceName),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -112,7 +119,9 @@ func (r *ConsulRegistry) Connect(ctx context.Context, hostPort string, serviceNa
 		return nil, err
 	}
 
-	r.logger.InfoContext(ctx, "🔗 Connected to service via Consul", "serviceName", serviceName)
+	r.logger.Info().
+		Str("serviceName", serviceName).
+		Msg("Connected to service via Consul")
 	return conn, nil
 }
 

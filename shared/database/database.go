@@ -12,9 +12,6 @@ type Database interface {
 
 	// Disconnect closes the database connection
 	Disconnect(ctx context.Context) error
-
-	// Ping checks if the database connection is alive
-	Ping(ctx context.Context) error
 }
 
 // Config represents generic database configuration.
