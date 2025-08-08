@@ -6,11 +6,7 @@ pre-commit:
   commands:
     golangci-lint:
       glob: "*.go"
-      run: golangci-lint run --fix {staged_files}
-      stage_fixed: true
-    golangci-fmt:
-      glob: "*.go"
-      run: golangci-lint fmt {staged_files}
+      run: ./scripts/lint_staged_files.sh {staged_files}
       stage_fixed: true
     go-mod-tidy:
       glob: "{go.mod,go.sum}"
@@ -20,4 +16,4 @@ pre-commit:
 commit-msg:
   commands:
     conventional-commit:
-      run: ./scripts/commit_check.sh {1}
+      run: ./scripts/check_commit.sh {1}
