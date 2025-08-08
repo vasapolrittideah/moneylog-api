@@ -6,11 +6,11 @@ pre-commit:
   commands:
     golangci-lint:
       glob: "*.go"
-      run: golangci-lint run --fix
+      run: golangci-lint run --fix {staged_files}
       stage_fixed: true
     golangci-fmt:
       glob: "*.go"
-      run: golangci-lint fmt
+      run: golangci-lint fmt {staged_files}
       stage_fixed: true
     go-mod-tidy:
       glob: "{go.mod,go.sum}"
