@@ -1,0 +1,19 @@
+# Lefthook configuration for Go project with golangci-lint and conventional commits
+# https://github.com/evilmartians/lefthook
+
+pre-commit:
+  parallel: false
+  commands:
+    golangci-lint:
+      glob: "*.go"
+      run: ./scripts/lint_staged_files.sh {staged_files}
+      stage_fixed: true
+    go-mod-tidy:
+      glob: "{go.mod,go.sum}"
+      run: go mod tidy
+      stage_fixed: true
+
+commit-msg:
+  commands:
+    conventional-commit:
+      run: ./scripts/check_commit.sh {1}
