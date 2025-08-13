@@ -13,11 +13,11 @@ services/auth_service/
 ├── internal/              # Private application code
 │   ├── config/            # Application configuration
 │   ├── domain/            # Business domain models and interfaces
-│   ├── handler/           # Request handlers
+│   ├── delivery/          # Request handlers
 │   │   └── grpc/          # gRPC server handlers
-│   ├── service/           # Business logic implementation
-│   └── store/             # Data persistence layer
-│       └── mongo/         # MongoDB data storage implementation
+│   ├── repository/        # Data persistence layer
+│   │   └── mongo/         # MongoDB data storage implementation
+│   └── usercase/          # Business logic implementation
 ├── pkg/                   # Public API and shared code
 │   ├── client/            # Client libraries
 │   └── types/             # Shared type definitions
@@ -26,7 +26,7 @@ services/auth_service/
 
 ### Layer Responsibilities
 
-1. **Presentation Layer** (`internal/handler/`)
+1. **Presentation Layer** (`internal/delivery/`)
    - Handles incoming requests and responses
    - Translates between transport payloads and domain models
    - Input validation and error handling
@@ -34,19 +34,19 @@ services/auth_service/
 
 2. **Domain Layer** (`internal/domain/`)
    - Contains business domain models and entities
-   - Defines contracts for stores and services
+   - Defines contracts for repositories and services
    - Pure business logic with no external dependencies
    - Domain-specific errors and validation rules
 
-3. **Application Layer** (`internal/service/`)
+3. **Application Layer** (`internal/usecase/`)
    - Implements business use cases and workflows
-   - Orchestrates domain objects and store operations
+   - Orchestrates domain objects and repository operations
    - Handles cross-cutting concerns (logging, metrics)
    - Enforces business rules and policies
 
-4. **Data Layer** (`internal/store/`)
+4. **Data Layer** (`internal/repository/`)
    - Handles data persistence and retrieval
-   - Implements domain store interfaces
+   - Implements domain repository interfaces
    - Manages database connections and transactions
    - Data mapping and query optimization
 
@@ -61,4 +61,3 @@ services/auth_service/
 
 ### Configuration
 The service uses environment variables for configuration. See `internal/config/` for available options.
-
