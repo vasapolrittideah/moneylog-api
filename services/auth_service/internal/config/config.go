@@ -6,6 +6,7 @@ import (
 )
 
 type AuthServiceConfig struct {
+	Name  string `env:"AUTH_SERVICE_NAME"`
 	Port  string `env:"AUTH_SERVICE_PORT"`
 	Token TokenConfig
 }

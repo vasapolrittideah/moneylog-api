@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/vasapolrittideah/moneylog-api/services/auth_service/internal/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -18,14 +19,8 @@ type userMongoRepository struct {
 	db *mongo.Database
 }
 
-func NewUserRepository(db *mongo.Database) domain.UserRepository {
-	return &userMongoRepository{
-		db: db,
-	}
-}
-
-func (r *userMongoRepository) EnsureIndexes(ctx context.Context) error {
-	collection := r.db.Collection(userCollection)
+func NewUserRepository(ctx context.Context, logger *zerolog.Logger, db *mongo.Database) domain.UserRepository {
+	collection := db.Collection(userCollection)
 
 	indexes := []mongo.IndexModel{
 		{
@@ -35,7 +30,13 @@ func (r *userMongoRepository) EnsureIndexes(ctx context.Context) error {
 	}
 
 	_, err := collection.Indexes().CreateMany(ctx, indexes)
-	return err
+	if err != nil {
+		logger.Fatal().Err(err).Msg("Failed to create user indexes")
+	}
+
+	return &userMongoRepository{
+		db: db,
+	}
 }
 
 func (r *userMongoRepository) CreateUser(ctx context.Context, user *domain.User) (*domain.User, error) {

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/vasapolrittideah/moneylog-api/services/auth_service/internal/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -17,7 +18,7 @@ type identityMongoRepository struct {
 	db *mongo.Database
 }
 
-func NewIdentityRepository(db *mongo.Database) domain.IdentityRepository {
+func NewIdentityRepository(_ context.Context, _ *zerolog.Logger, db *mongo.Database) domain.IdentityRepository {
 	return &identityMongoRepository{
 		db: db,
 	}
