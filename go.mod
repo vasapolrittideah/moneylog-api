@@ -7,15 +7,19 @@ require (
 	github.com/hashicorp/consul/api v1.32.1
 	github.com/mbobakov/grpc-consul-resolver v1.5.3
 	github.com/rs/zerolog v1.34.0
+	go.mongodb.org/mongo-driver v1.17.4
 	go.mongodb.org/mongo-driver/v2 v2.2.3
 	google.golang.org/grpc v1.74.2
 )
+
+require github.com/golang-jwt/jwt/v5 v5.3.0
+
+require github.com/stretchr/testify v1.10.0 // indirect
 
 require (
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/go-playground/form v3.1.4+incompatible // indirect
-	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
