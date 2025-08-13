@@ -3,13 +3,13 @@ package domain
 import (
 	"context"
 
-	"github.com/vasapolrittideah/moneylog-api/services/auth_service/pkg/types"
+	authtypes "github.com/vasapolrittideah/moneylog-api/services/auth_service/pkg/types"
 )
 
 // AuthUsecase defines the interface for authentication business logics.
 type AuthUsecase interface {
-	Login(ctx context.Context, params LoginParams) (*types.Tokens, error)
-	SignUp(ctx context.Context, params SignUpParams) (*types.Tokens, error)
+	Login(ctx context.Context, params LoginParams) (*authtypes.Tokens, error)
+	SignUp(ctx context.Context, params SignUpParams) (*authtypes.Tokens, error)
 }
 
 // LoginParams contains the parameters for user login.

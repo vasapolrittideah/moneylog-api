@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/vasapolrittideah/moneylog-api/services/auth_service/internal/config"
 	"github.com/vasapolrittideah/moneylog-api/services/auth_service/internal/domain"
-	"github.com/vasapolrittideah/moneylog-api/services/auth_service/pkg/types"
+	authtypes "github.com/vasapolrittideah/moneylog-api/services/auth_service/pkg/types"
 	"github.com/vasapolrittideah/moneylog-api/shared/auth"
 	"github.com/vasapolrittideah/moneylog-api/shared/security"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -44,7 +44,7 @@ func NewAuthUsecase(
 	}
 }
 
-func (u *authUsecase) Login(ctx context.Context, params domain.LoginParams) (*types.Tokens, error) {
+func (u *authUsecase) Login(ctx context.Context, params domain.LoginParams) (*authtypes.Tokens, error) {
 	user, err := u.userRepo.GetUserByEmail(ctx, params.Email)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
@@ -67,7 +67,7 @@ func (u *authUsecase) Login(ctx context.Context, params domain.LoginParams) (*ty
 	return u.createAuthSession(ctx, user.ID.Hex())
 }
 
-func (u *authUsecase) SignUp(ctx context.Context, params domain.SignUpParams) (*types.Tokens, error) {
+func (u *authUsecase) SignUp(ctx context.Context, params domain.SignUpParams) (*authtypes.Tokens, error) {
 	passwordHash, err := security.HashPassword(params.Password)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ func (u *authUsecase) SignUp(ctx context.Context, params domain.SignUpParams) (*
 	return u.createAuthSession(ctx, user.ID.Hex())
 }
 
-func (u *authUsecase) createAuthSession(ctx context.Context, userID string) (*types.Tokens, error) {
+func (u *authUsecase) createAuthSession(ctx context.Context, userID string) (*authtypes.Tokens, error) {
 	session, err := u.sessionRepo.CreateSession(ctx, &domain.Session{UserID: userID})
 	if err != nil {
 		return nil, err
@@ -134,7 +134,7 @@ func (u *authUsecase) createAuthSession(ctx context.Context, userID string) (*ty
 		return nil, err
 	}
 
-	return &types.Tokens{
+	return &authtypes.Tokens{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
@@ -142,7 +142,7 @@ func (u *authUsecase) createAuthSession(ctx context.Context, userID string) (*ty
 
 func (u *authUsecase) generateToken(userID, sessionID, secret string, expiresIn time.Duration) (string, error) {
 	now := time.Now()
-	claims := types.JWTClaims{
+	claims := authtypes.JWTClaims{
 		UserID:    userID,
 		SessionID: sessionID,
 		RegisteredClaims: jwt.RegisteredClaims{
