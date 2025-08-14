@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
-	"github.com/vasapolrittideah/moneylog-api/services/auth_service/internal/domain"
+	"github.com/vasapolrittideah/moneylog-api/services/auth-service/internal/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"

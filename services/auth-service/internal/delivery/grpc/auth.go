@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/vasapolrittideah/moneylog-api/services/auth_service/internal/domain"
-	"github.com/vasapolrittideah/moneylog-api/services/auth_service/internal/usecase"
+	"github.com/vasapolrittideah/moneylog-api/services/auth-service/internal/domain"
+	"github.com/vasapolrittideah/moneylog-api/services/auth-service/internal/usecase"
 	authpbv1 "github.com/vasapolrittideah/moneylog-api/shared/protos/auth/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

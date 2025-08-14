@@ -14,7 +14,7 @@ show_usage() {
 # Function to create service structure
 create_service_structure() {
     local service_name="$1"
-    local base_path="services/${service_name}_service"
+    local base_path="services/${service_name}-service"
     
     # Create directory structure
     local dirs=(
@@ -28,7 +28,7 @@ create_service_structure() {
         "pkg/types"
     )
     
-    echo "Creating service structure for ${service_name}_service..."
+    echo "Creating service structure for ${service_name}-service..."
     
     for dir in "${dirs[@]}"; do
         local full_path="${base_path}/${dir}"
@@ -48,7 +48,7 @@ This service handles all ${service_name}-related operations in the system.
 The service follows Clean Architecture principles with the following structure:
 
 \`\`\`
-services/${service_name}_service/
+services/${service_name}-service/
 ├── cmd/                   # Application entry points
 │   └── main.go            # Main application bootstrapper
 ├── internal/              # Private application code
@@ -125,10 +125,10 @@ func main() {
         exit 1
     fi
     
-    echo "Successfully created ${service_name}_service structure in $base_path"
+    echo "Successfully created ${service_name}-service structure in $base_path"
     echo ""
     echo "Directory structure created:"
-    echo "services/${service_name}_service/"
+    echo "services/${service_name}-service/"
     echo "├── cmd/                   # Application entry points"
     echo "│   └── main.go            # Main application bootstrapper"
     echo "├── internal/              # Private application code"

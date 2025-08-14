@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/vasapolrittideah/moneylog-api/services/auth_service/internal/config"
-	"github.com/vasapolrittideah/moneylog-api/services/auth_service/internal/domain"
-	authtypes "github.com/vasapolrittideah/moneylog-api/services/auth_service/pkg/types"
+	"github.com/vasapolrittideah/moneylog-api/services/auth-service/internal/config"
+	"github.com/vasapolrittideah/moneylog-api/services/auth-service/internal/domain"
+	authtypes "github.com/vasapolrittideah/moneylog-api/services/auth-service/pkg/types"
 	"github.com/vasapolrittideah/moneylog-api/shared/auth"
 	"github.com/vasapolrittideah/moneylog-api/shared/security"
 	"go.mongodb.org/mongo-driver/v2/mongo"

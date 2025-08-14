@@ -3,7 +3,7 @@ package authclient
 import (
 	"fmt"
 
-	"github.com/vasapolrittideah/moneylog-api/services/auth_service/internal/config"
+	"github.com/vasapolrittideah/moneylog-api/services/auth-service/internal/config"
 	"github.com/vasapolrittideah/moneylog-api/shared/discovery"
 	authpbv1 "github.com/vasapolrittideah/moneylog-api/shared/protos/auth/v1"
 	"google.golang.org/grpc"

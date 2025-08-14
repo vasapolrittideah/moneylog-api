@@ -3,7 +3,7 @@ package domain
 import (
 	"context"
 
-	authtypes "github.com/vasapolrittideah/moneylog-api/services/auth_service/pkg/types"
+	authtypes "github.com/vasapolrittideah/moneylog-api/services/auth-service/pkg/types"
 )
 
 // AuthUsecase defines the interface for authentication business logics.

@@ -7,7 +7,7 @@ This service handles all auth-related operations in the system.
 The service follows Clean Architecture principles with the following structure:
 
 ```
-services/auth_service/
+services/auth-service/
 ├── cmd/                   # Application entry points
 │   └── main.go            # Main application bootstrapper
 ├── internal/              # Private application code
