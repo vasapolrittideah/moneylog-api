@@ -14,8 +14,8 @@ import (
 
 // MongoConfig contains MongoDB connection configuration.
 type MongoConfig struct {
-	URI      string `env:"MONGODB_URI"`
-	Database string `env:"MONGODB_DB"`
+	URI      string `env:"MONGO_URI"`
+	Database string `env:"MONGO_DB"`
 }
 
 const (
