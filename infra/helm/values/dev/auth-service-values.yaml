@@ -1,0 +1,50 @@
+nameOverride: "auth"
+fullnameOverride: "auth-service"
+
+global:
+  registry: ""
+  imageTag: "latest"
+  imagePullPolicy: IfNotPresent
+
+service:
+  name: "auth-service"
+  type: ClusterIP
+  port: 9001
+  targetPort: 9001
+  annotations: {}
+
+deployment:
+  replicaCount: 1
+
+  image:
+    repository: "vasapolrittideah/moneylog-api-auth-service"
+    tag: ""
+    pullPolicy: IfNotPresent
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  envFrom: true
+
+configMap:
+  enabled: true
+  data:
+    ENVIRONMENT: "development"
+    SERVICE_NAME: "auth-service"
+    SERVICE_HOST: "auth-service.default"
+    SERVICE_PORT: "9001"
+    ACCESS_TOKEN_EXPIRES_IN: "2h"
+    REFRESH_TOKEN_EXPIRES_IN: "336h"
+    TOKEN_ISSUER: "auth-service"
+    CONSUL_ADDR: "consul-server.consul:8500"
+
+secrets:
+  enabled: true
+
+autoscaling:
+  enabled: false
