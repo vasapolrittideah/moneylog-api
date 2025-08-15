@@ -9,8 +9,9 @@ import (
 
 type AuthServiceConfig struct {
 	Environment string `env:"ENVIRONMENT"`
-	Name        string `env:"AUTH_SERVICE_NAME"`
-	Port        string `env:"AUTH_SERVICE_PORT"`
+	Name        string `env:"SERVICE_NAME"`
+	Host        string `env:"SERVICE_HOST"`
+	Port        string `env:"SERVICE_PORT"`
 	Token       TokenConfig
 }
 

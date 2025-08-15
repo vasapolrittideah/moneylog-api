@@ -18,7 +18,7 @@ func NewAuthServiceClient(
 	consulRegistry *discovery.ConsulRegistry,
 	authServiceCfg *config.AuthServiceConfig,
 ) (*AuthServiceClient, error) {
-	authServiceAddr := fmt.Sprintf("%s:%s", authServiceCfg.Name, authServiceCfg.Port)
+	authServiceAddr := fmt.Sprintf("%s:%s", authServiceCfg.Host, authServiceCfg.Port)
 	conn, err := consulRegistry.Connect(authServiceAddr, authServiceCfg.Name)
 	if err != nil {
 		return nil, err
