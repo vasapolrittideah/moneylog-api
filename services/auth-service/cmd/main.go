@@ -17,6 +17,8 @@ import (
 	"github.com/vasapolrittideah/moneylog-api/shared/discovery"
 	"github.com/vasapolrittideah/moneylog-api/shared/logger"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
 func main() {
@@ -45,7 +47,7 @@ func main() {
 
 	serviceID := authServiceCfg.Name + "-1"
 	serviceName := authServiceCfg.Name
-	serviceAddr := fmt.Sprintf("%s:%s", authServiceCfg.Name, authServiceCfg.Port)
+	serviceAddr := fmt.Sprintf("%s:%s", authServiceCfg.Host, authServiceCfg.Port)
 	if err := consulRegistry.Register(serviceID, serviceName, serviceAddr); err != nil {
 		logger.Fatal().Err(err).Msg("Failed to register service in Consul")
 	}
@@ -75,6 +77,10 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 	grpchandler.NewAuthGRPCHandler(grpcServer, authUsecase)
+
+	healthServer := health.NewServer()
+	healthServer.SetServingStatus("", grpc_health_v1.HealthCheckResponse_SERVING)
+	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
 	go func() {
 		signalChan := make(chan os.Signal, 1)
