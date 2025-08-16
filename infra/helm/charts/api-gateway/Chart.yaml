@@ -1,0 +1,10 @@
+apiVersion: v2
+name: api-gateway
+type: application
+version: 0.1.0
+description: API gateway chart
+appVersion: "1.0.0"
+dependencies:
+  - name: base-service
+    version: 0.1.0
+    repository: file://../_base-service
