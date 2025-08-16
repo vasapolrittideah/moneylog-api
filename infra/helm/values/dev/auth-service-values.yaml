@@ -36,8 +36,8 @@ configMap:
   data:
     ENVIRONMENT: "development"
     SERVICE_NAME: "auth-service"
-    SERVICE_HOST: "auth-service.default"
-    SERVICE_PORT: "9001"
+    SERVICE_ADDR: "0.0.0.0:9001"
+    SERVICE_REGISTER_ADDR: "auth-service.default:9001"
     ACCESS_TOKEN_EXPIRES_IN: "2h"
     REFRESH_TOKEN_EXPIRES_IN: "336h"
     TOKEN_ISSUER: "auth-service"
