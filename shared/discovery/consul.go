@@ -49,6 +49,7 @@ type ConsulRegistry struct {
 	client      *consulapi.Client
 	healthCheck *HealthCheckConfig
 	logger      *zerolog.Logger
+	cfg         *ConsulRegistryConfig
 }
 
 // NewConsulRegistry creates a new Consul registry with default health check settings.
@@ -65,16 +66,17 @@ func NewConsulRegistry(cfg *ConsulRegistryConfig, logger *zerolog.Logger) (*Cons
 		client:      client,
 		healthCheck: DefaultHealthCheckConfig(),
 		logger:      logger,
+		cfg:         cfg,
 	}, nil
 }
 
-const expectedHostPortParts = 2
+const expectedserviceAddrParts = 2
 
 // Register registers a service instance with Consul including gRPC health checks.
-func (r *ConsulRegistry) Register(instanceID string, serviceName string, hostPort string) error {
-	parts := strings.Split(hostPort, ":")
-	if len(parts) != expectedHostPortParts {
-		return fmt.Errorf("invalid host:port format : %s", hostPort)
+func (r *ConsulRegistry) Register(instanceID, serviceName, serviceAddr string) error {
+	parts := strings.Split(serviceAddr, ":")
+	if len(parts) != expectedserviceAddrParts {
+		return fmt.Errorf("invalid host:port format : %s", serviceAddr)
 	}
 
 	host := parts[0]
@@ -122,9 +124,9 @@ func (r *ConsulRegistry) Deregister(instanceID string, serviceName string) error
 }
 
 // Connect establishes a gRPC connection to a service via Consul with load balancing.
-func (r *ConsulRegistry) Connect(hostPort string, serviceName string) (*grpc.ClientConn, error) {
+func (r *ConsulRegistry) Connect(serviceName string) (*grpc.ClientConn, error) {
 	conn, err := grpc.NewClient(
-		fmt.Sprintf("consul://%s/%s?tag=grpc&healthy=true", hostPort, serviceName),
+		fmt.Sprintf("consul://%s/%s?tag=grpc&healthy=true", r.cfg.Addr, serviceName),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy": "round_robin"}`),
 	)
