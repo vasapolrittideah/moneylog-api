@@ -1,0 +1,46 @@
+nameOverride: "api-gateway"
+fullnameOverride: "api-gateway"
+
+global:
+  registry: ""
+  imageTag: "latest"
+  imagePullPolicy: IfNotPresent
+
+service:
+  name: "api-gateway"
+  type: LoadBalancer
+  port: 9000
+  targetPort: 9000
+  annotations: {}
+
+deployment:
+  replicaCount: 1
+
+  image:
+    repository: "vasapolrittideah/moneylog-api-api-gateway"
+    tag: ""
+    pullPolicy: IfNotPresent
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  envFrom: true
+
+configMap:
+  enabled: true
+  data:
+    ENVIRONMENT: "development"
+    API_GATEWAY_ADDR: "0.0.0.0:9000"
+    AUTH_SERVICE_NAME: "auth-service"
+    CONSUL_ADDR: "consul-server.consul:8500"
+
+secrets:
+  enabled: false
+
+autoscaling:
+  enabled: false
