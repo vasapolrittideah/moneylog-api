@@ -25,6 +25,43 @@ k8s_resource(
     discovery_strategy='selectors-only',
 )
 
+# API Gateway
+gateway_compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/api-gateway ./services/api-gateway/cmd/main.go'
+if os.name == 'nt':
+    gateway_compile_cmd = './infra/docker/dev/api-gateway-build.bat'
+
+local_resource(
+    'api-gateway-compile',
+    gateway_compile_cmd,
+    deps=['./services/api-gateway', './shared'],
+    labels='compiles',
+)
+
+docker_build_with_restart(
+    'vasapolrittideah/moneylog-api-api-gateway',
+    '.',
+    entrypoint=['/app/build/api-gateway'],
+    dockerfile='./infra/docker/dev/api-gateway.Dockerfile',
+    only=['./build/api-gateway', './shared'],
+    live_update=[
+        sync('./build', '/app/build'),
+        sync('./shared', '/app/shared')
+    ],
+)
+
+k8s_yaml(helm(
+    './infra/helm/charts/api-gateway',
+    name='api-gateway',
+    values=['./infra/helm/values/dev/api-gateway-values.yaml']
+))
+
+k8s_resource(
+    'api-gateway',
+    resource_deps=['api-gateway-compile', 'consul'],
+    port_forwards='9000',
+    labels='services',
+)
+
 # Auth Service
 helm_repo('bitnami', 'https://charts.bitnami.com/bitnami')
 helm_resource(
