@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"os"
 	"os/signal"
@@ -46,13 +45,11 @@ func main() {
 	}
 
 	serviceID := authServiceCfg.Name + "-1"
-	serviceName := authServiceCfg.Name
-	serviceAddr := fmt.Sprintf("%s:%s", authServiceCfg.Host, authServiceCfg.Port)
-	if err := consulRegistry.Register(serviceID, serviceName, serviceAddr); err != nil {
+	if err := consulRegistry.Register(serviceID, authServiceCfg.Name, authServiceCfg.RegisterAddr); err != nil {
 		logger.Fatal().Err(err).Msg("Failed to register service in Consul")
 	}
 	defer func() {
-		if err := consulRegistry.Deregister(serviceID, serviceName); err != nil {
+		if err := consulRegistry.Deregister(serviceID, authServiceCfg.Name); err != nil {
 			logger.Error().Err(err).Msg("Failed to deregister service in Consul")
 		}
 	}()
@@ -68,9 +65,8 @@ func main() {
 
 	authUsecase := usecase.NewAuthUsecase(identityRepo, sessionRepo, userRepo, jwtAuthenticator, authServiceCfg)
 
-	grpcAddr := fmt.Sprintf(":%s", authServiceCfg.Port)
 	lc := net.ListenConfig{}
-	lis, err := lc.Listen(ctx, "tcp", grpcAddr)
+	lis, err := lc.Listen(ctx, "tcp", authServiceCfg.Addr)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("Failed to listen on gRPC address")
 	}
@@ -89,7 +85,7 @@ func main() {
 		cancel()
 	}()
 
-	logger.Info().Str("addr", grpcAddr).Msg("Starting gRPC server for auth service")
+	logger.Info().Str("address", authServiceCfg.Addr).Msg("Starting gRPC server for auth service")
 	go func() {
 		if err := grpcServer.Serve(lis); err != nil {
 			logger.Fatal().Err(err).Msg("Failed to start gRPC server")

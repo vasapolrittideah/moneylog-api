@@ -8,11 +8,11 @@ import (
 )
 
 type AuthServiceConfig struct {
-	Environment string `env:"ENVIRONMENT"`
-	Name        string `env:"SERVICE_NAME"`
-	Host        string `env:"SERVICE_HOST"`
-	Port        string `env:"SERVICE_PORT"`
-	Token       TokenConfig
+	Environment  string `env:"ENVIRONMENT"`
+	Name         string `env:"SERVICE_NAME"`
+	Addr         string `env:"SERVICE_ADDR"`
+	RegisterAddr string `env:"SERVICE_REGISTER_ADDR"`
+	Token        TokenConfig
 }
 
 type TokenConfig struct {
