@@ -108,7 +108,7 @@ func (u *authUsecase) createAuthSession(ctx context.Context, userID string) (*au
 		userID,
 		session.ID.Hex(),
 		u.authServiceCfg.Token.AccessTokenSecret,
-		time.Duration(u.authServiceCfg.Token.AccessTokenExpiresIn),
+		u.authServiceCfg.Token.AccessTokenExpiresIn,
 	)
 	if err != nil {
 		return nil, err
@@ -118,7 +118,7 @@ func (u *authUsecase) createAuthSession(ctx context.Context, userID string) (*au
 		userID,
 		session.ID.Hex(),
 		u.authServiceCfg.Token.RefreshTokenSecret,
-		time.Duration(u.authServiceCfg.Token.RefreshTokenExpiresIn),
+		u.authServiceCfg.Token.RefreshTokenExpiresIn,
 	)
 	if err != nil {
 		return nil, err
@@ -128,8 +128,8 @@ func (u *authUsecase) createAuthSession(ctx context.Context, userID string) (*au
 	if _, err := u.sessionRepo.UpdateTokens(ctx, session.ID.Hex(), domain.UpdateTokensParams{
 		AccessToken:           accessToken,
 		RefreshToken:          refreshToken,
-		AccessTokenExpiresAt:  now.Add(time.Duration(u.authServiceCfg.Token.AccessTokenExpiresIn)),
-		RefreshTokenExpiresAt: now.Add(time.Duration(u.authServiceCfg.Token.RefreshTokenExpiresIn)),
+		AccessTokenExpiresAt:  now.Add(u.authServiceCfg.Token.AccessTokenExpiresIn),
+		RefreshTokenExpiresAt: now.Add(u.authServiceCfg.Token.RefreshTokenExpiresIn),
 	}); err != nil {
 		return nil, err
 	}
